@@ -1,0 +1,21 @@
+name: ReBADD_SE
+channels:
+  - pytorch
+  - conda-forge
+dependencies:
+  - python=3.8
+  - cudatoolkit=11.3
+  - pytorch=1.12.1=py3.8_cuda11.3_cudnn8.3.2_0
+  - rdkit=2021.03.4
+  - scikit-learn=0.22.2.post1
+  - xgboost=1.0.2
+  - requests
+  - scipy
+  - seaborn
+  - matplotlib
+  - pandas
+  - tqdm
+  - jupyter
+  - networkx
+  - selfies
+  - textdistance
