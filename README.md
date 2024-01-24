@@ -1,8 +1,10 @@
-# ReBADD-SE
+# ReBADD-SE (under construction)
 This is the repository for ReBADD-SE, a multi-objective molecular optimization model that designs a molecular structures in the format of SELFIES.
 For more details, please refer to our [paper](https://www.sciencedirect.com/science/article/pii/S0010482523001865).
 
-- Latest update: 22 Jan 2024
+**Notice** We are currently in the process of updating the repository to enhance the usability of ReBADD-SE. We apologize for any inconvenience this may cause during the update. The update is expected to be completed within this week, and we appreciate your patience. 
+
+- Latest update: 24 Jan 2024
 
 
 
