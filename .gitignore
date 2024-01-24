@@ -32,8 +32,14 @@ rebadd/SA_module/__pycache__
 
 data/chembl/__pycache__
 data/chembl/.ipynb_checkpoints
+data/chembl/all_processed.csv
+data/chembl/chembl_gsk3_jnk3_qed_sa.csv
 data/chembl/chembl_train_full.csv
+data/chembl/chembl_test_full.csv
 
 data/zinc15/__pycache__
 data/zinc15/.ipynb_checkpoints
+data/zinc15/zinc15_raw_to_canonical.csv
 data/zinc15/zinc15_train_full.csv
+data/zinc15/zinc15_test_full.csv
+data/zinc15/raw
