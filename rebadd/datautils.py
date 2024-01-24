@@ -122,3 +122,14 @@ class GeneratorData:
         inp = self.char_tensor(chunk[:-1])
         target = self.char_tensor(chunk[1:])
         return inp, target
+        
+        
+if __name__=='__main__':
+    list_of_selfies_strings = [
+        '[C][C][N][Branch1][Ring1][C][C][C][=Branch1][C][=O][C][=C][Branch1][C][C][N][=C][S][C][Branch2][Ring1][=Branch2][C][=Branch1][C][=O][N][Ring1][=Branch1][C][Ring1][O][C][=C][C][=C][C][=C][Ring1][=Branch1][O][C][Branch1][C][C][C][=C][C][=C][C]',
+    ]
+    
+    fragments = get_fragment_from_selfies(list_of_selfies_strings)[0]
+    
+    for i, f in enumerate(fragments):
+        print(i, f)
