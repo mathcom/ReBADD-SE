@@ -3,15 +3,19 @@ __pycache__
 
 TASK1/__pycache__
 TASK1/.ipynb_checkpoints
+TASK1/outputs_*
 
 TASK3/__pycache__
 TASK3/.ipynb_checkpoints
+TASK3/outputs_*
 
 TASK4/__pycache__
 TASK4/.ipynb_checkpoints
+TASK4/outputs_*
 
 TASK7/__pycache__
 TASK7/.ipynb_checkpoints
+TASK7/outputs_*
 
 rebadd/__pycache__
 rebadd/.ipynb_checkpoints
@@ -39,7 +43,10 @@ data/chembl/chembl_test_full.csv
 
 data/zinc15/__pycache__
 data/zinc15/.ipynb_checkpoints
+data/zinc15/raw
 data/zinc15/zinc15_raw_to_canonical.csv
+data/zinc15/zinc15_canonical_to_bcl2family.csv
 data/zinc15/zinc15_train_full.csv
 data/zinc15/zinc15_test_full.csv
-data/zinc15/raw
+data/zinc15/zinc15_train.txt
+data/zinc15/zinc15_test.txt
