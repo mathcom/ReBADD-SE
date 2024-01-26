@@ -41,13 +41,17 @@ def build_attention():
 
 
 
-def build_regressor(n_tokens_protein=492, n_tokens_smiles=67):
+def build_regressor(n_tokens_protein, n_tokens_smiles, use_attention):
     protein_encoder = build_Protein_en(n_tokens_protein)
     smiles_encoder = build_SMILES_en(n_tokens_smiles)
     fc_layers = FC_layers()
-    attention_qpks = build_attention() # query = protein : key = smiles
-    attention_qskp = build_attention() # query = smiles : key = protein
-    return new_regression_model(protein_encoder, smiles_encoder, fc_layers, attention_qpks, attention_qskp)
+    if use_attention:
+        attention_qpks = build_attention() # query = protein : key = smiles
+        attention_qskp = build_attention() # query = smiles : key = protein
+    else:
+        attention_qpks = None
+        attention_qskp = None
+    return regression_model(protein_encoder, smiles_encoder, fc_layers, attention_qpks, attention_qskp)
 
     
     
@@ -71,9 +75,9 @@ def normalize_SMILES(smi):
 
 
 
-class new_regression_model(torch.nn.Module):
+class regression_model(torch.nn.Module):
     def __init__(self, protein_en, compound_en, fc_layers, attention_qpks, attention_qskp):
-        super(new_regression_model, self).__init__()
+        super(regression_model, self).__init__()
         self.protein_encoder = protein_en
         self.smiles_encoder = compound_en
         self.fc_layers = fc_layers
@@ -109,12 +113,14 @@ class new_regression_model(torch.nn.Module):
         new_protein_vector: (batch_size, 1, 2*hidden_size)
         new_compound_vector: (batch_size, 1, 2*hidden_size)
         '''
-        new_protein_vector, _ = self.attention_qpks(protein_vector.unsqueeze(1), compound_hidden)
-        new_compound_vector, _ = self.attention_qskp(compound_vector.unsqueeze(1), protein_hidden)
-
+        if self.attention_qpks is not None and self.attention_qskp is not None:
+            new_protein_vector, _ = self.attention_qpks(protein_vector.unsqueeze(1), compound_hidden)
+            new_compound_vector, _ = self.attention_qskp(compound_vector.unsqueeze(1), protein_hidden)
+            protein_vector = new_protein_vector.squeeze(1)
+            compound_vector = new_compound_vector.squeeze(1)
         
         ## mlp
-        outputs = self.fc_layers(new_protein_vector.squeeze(1), new_compound_vector.squeeze(1))
+        outputs = self.fc_layers(protein_vector, compound_vector)
        
         return outputs 
 
@@ -122,7 +128,7 @@ class new_regression_model(torch.nn.Module):
 
 
 class DTA(object):
-    def __init__(self, device, use_cuda, use_pretrained=True):
+    def __init__(self, device, use_cuda, use_attention=False, use_pretrained=True):
         super(DTA, self).__init__()
         ## gpu configs
         self.device = device
@@ -130,9 +136,9 @@ class DTA(object):
         ## ckpt info
         self.filepath_protein_voca = os.path.join(os.path.dirname(__file__), 'ckpt', 'Sequence_voca.txt')
         self.filepath_smiles_voca  = os.path.join(os.path.dirname(__file__), 'ckpt', 'SMILES_voca.txt')
-        self.filepath_model = os.path.join(os.path.dirname(__file__), 'ckpt', 'rebadd-dta_merged_00009700.pt')
+        self.filepath_model = os.path.join(os.path.dirname(__file__), 'ckpt', 'rebadd-dta_merged.pt')
         ## init model
-        self.model, self.mc = self._init_model()
+        self.model, self.mc = self._init_model(use_attention)
         self.model.to(self.device)
         ## pretrained
         if use_pretrained:
@@ -192,14 +198,14 @@ class DTA(object):
         return loader
 
     
-    def _init_model(self):
+    def _init_model(self, use_attention):
         ## vocabulary
         protein_voca = ProteinVoca(filepath=self.filepath_protein_voca)
         smiles_voca = LigandVoca(filepath=self.filepath_smiles_voca)
         ## collate function for DataLoader
         mc = Mycall(protein_voca, smiles_voca, self.use_cuda)
         ## Initialize a regressor model
-        regressor = build_regressor(protein_voca.num_words, smiles_voca.num_words)
+        regressor = build_regressor(protein_voca.num_words, smiles_voca.num_words, use_attention)
         return regressor, mc
     
     
